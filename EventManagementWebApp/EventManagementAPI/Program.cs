@@ -1,3 +1,4 @@
+using EventManagementAPI.Commons;
 using EventManagementAPI.Data;
 using EventManagementAPI.Repositories;
 using EventManagementAPI.Repositories.Interfaces;
@@ -7,9 +8,26 @@ using EventManagementAPI.Validations;
 using EventManagementAPI.ViewModels;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Polly;
+using Polly.CircuitBreaker;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Memory cache + Circuit Breaker pattern
+builder.Services.AddMemoryCache();
+builder.Services.AddResiliencePipeline(Constants.DbCircuitBreakerKey, builder =>
+{
+    builder.AddCircuitBreaker(new CircuitBreakerStrategyOptions
+    {
+        FailureRatio = 0.5, // Trip if 50% of requests fail
+        SamplingDuration = TimeSpan.FromSeconds(30),
+        MinimumThroughput = 5,
+        BreakDuration = TimeSpan.FromSeconds(15), // How long to stay "Open"
+        ShouldHandle = new PredicateBuilder().Handle<DbUpdateException>().Handle<SqliteException>()
+    });
+});
 
 // Add services to the container.
 builder.Services.AddControllers();

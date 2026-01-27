@@ -4,7 +4,6 @@ using EventManagementAPI.Services.Interfaces;
 using EventManagementAPI.ViewModels;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using System;
 
 namespace EventManagementAPI.Controllers
 {
@@ -122,9 +121,6 @@ namespace EventManagementAPI.Controllers
         [ProducesResponseType(typeof(TicketAvailabilityPayLoad), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetTicketsAvailability([FromQuery] int pageNumber = 0, [FromQuery] int pageSize = 10)
         {
-            if (pageNumber < 1) pageNumber = 1;
-            if (pageSize > 20) pageSize = 10;
-
             var results = await _eventService.GetTicketAvailabilityAsync(pageNumber, pageSize);
             var payload = new TicketAvailabilityPayLoad()
             {

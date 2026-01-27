@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventManagementAPI.Data
 {
-    public class AppDbContext: DbContext
+    public class AppDbContext : DbContext
     {
         public DbSet<Venue> Venues => Set<Venue>();
         public DbSet<PricingTier> PricingTiers => Set<PricingTier>();
@@ -36,7 +36,8 @@ namespace EventManagementAPI.Data
             modelBuilder.Entity<TicketType>()
             .HasMany(tt => tt.Tickets)
             .WithOne(t => t.TicketType)
-            .HasForeignKey(t => t.TicketTypeId);
+            .HasForeignKey(t => t.TicketTypeId)
+            .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
