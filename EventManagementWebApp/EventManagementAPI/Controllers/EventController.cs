@@ -69,7 +69,7 @@ namespace EventManagementAPI.Controllers
             var result = await _eventService.DeleteEventAsync(eventId);
             var apiResponse = EventMgtSingleton.Instance.GetApiResponse(result,
                 result ? ApiResponseStatus.Success : ApiResponseStatus.Failed,
-                result ? "Delete successful.": "Delete failed.");
+                result ? "Delete successful." : "Delete failed.");
             return Ok(apiResponse);
         }
 
@@ -80,7 +80,7 @@ namespace EventManagementAPI.Controllers
         {
             if (id <= 0) return BadRequest();
 
-            var evt = await _eventService.GetEventByIdAsync(id, 
+            var evt = await _eventService.GetEventByIdAsync(id,
                                 string.Equals(incVenue, "Y", StringComparison.OrdinalIgnoreCase),
                                 string.Equals(incTicketTypes, "Y", StringComparison.OrdinalIgnoreCase));
 
@@ -112,8 +112,26 @@ namespace EventManagementAPI.Controllers
 
             var result = await _ticketService.PurchaseTicketAsync(purchaseTicketDto);
             var message = result ? "Purchase successful." : "Purchase failed, please try again later.";
-            var apiResponse = EventMgtSingleton.Instance.GetApiResponse(result, 
+            var apiResponse = EventMgtSingleton.Instance.GetApiResponse(result,
                 result ? ApiResponseStatus.Success : ApiResponseStatus.Failed, message);
+            return Ok(apiResponse);
+        }
+
+        [HttpGet]
+        [Route("tickets")]
+        [ProducesResponseType(typeof(TicketAvailabilityPayLoad), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetTicketsAvailability([FromQuery] int pageNumber = 0, [FromQuery] int pageSize = 10)
+        {
+            if (pageNumber < 1) pageNumber = 1;
+            if (pageSize > 20) pageSize = 10;
+
+            var results = await _eventService.GetTicketAvailabilityAsync(pageNumber, pageSize);
+            var payload = new TicketAvailabilityPayLoad()
+            {
+                Events = results.ticketAvailabilities,
+                TotalCount = results.totalCount
+            };
+            var apiResponse = EventMgtSingleton.Instance.GetApiResponse(payload, ApiResponseStatus.Success, "");
             return Ok(apiResponse);
         }
     }

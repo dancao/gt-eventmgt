@@ -16,6 +16,6 @@ namespace EventManagementAPI.Services.Interfaces
         Task<bool> DeleteEventAsync(long id);
         Task<EventDto> GetEventByIdAsync(long id, bool includeVenue = false, bool includeTicketTypes = false);
         Task<List<EventDto>> GetAllEventsAsync();
-        
+        Task<(List<TicketAvailabilityDto> ticketAvailabilities, int totalCount)> GetTicketAvailabilityAsync(int pageNumber = 1, int pageSize = 10);
     }
 }

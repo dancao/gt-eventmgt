@@ -31,4 +31,16 @@ namespace EventManagementAPI.ViewModels
 
         public List<TicketDto> Tickets { get; set; } = [];
     }
+
+    public class TicketTypeLiteDto
+    {
+        [JsonProperty("name")]
+        public string Name { get; set; } = "General Admission";
+
+        [JsonProperty("totalAvailable")]
+        public int TotalAvailable { get; set; }  // Initial inventory
+
+        [JsonProperty("remaining")]
+        public int Remaining { get; set; }
+    }
 }

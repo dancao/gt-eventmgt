@@ -27,14 +27,41 @@ namespace EventManagementAPI.Repositories
         public async Task<List<Event>> GetAllAsync()
         {
             return await _context.Events
+                .AsNoTracking()
                 .Include(x => x.Venue)
-                .Include(x => x.TicketTypes).ThenInclude(tt => tt.PricingTier)
+                .Include(x => x.TicketTypes)
                 .ToListAsync();
+        }
+
+        public async Task<(List<Event> events, int totalCount)> GetTicketAvailabilityAsync(int pageNumber = 1, int pageSize = 10)
+        {
+            if (pageNumber < 1) pageNumber = 1;
+            if(pageSize > 20) pageSize = 10;
+
+            var query = _context.Events
+                .AsNoTracking()
+                .Include(x => x.Venue)
+                .Include(x => x.TicketTypes)
+                .AsQueryable();
+
+            query = query.Where(evt => evt.IsActive && evt.EventStatus == Commons.EventStatus.Active);
+
+            query = query.OrderBy(evt => evt.CreatedOn).ThenBy(evt => evt.Name);
+
+            int totalCount = await query.CountAsync();
+
+            var items = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalCount);
         }
 
         public async Task<Event> GetByIdAsync(long id)
         {
             return await _context.Events
+                .AsNoTracking()
                 .Include(x => x.Venue)
                 .Include(x => x.TicketTypes).ThenInclude(tt => tt.PricingTier)
                 .FirstOrDefaultAsync(x => x.Id == id) ?? throw new Exception();

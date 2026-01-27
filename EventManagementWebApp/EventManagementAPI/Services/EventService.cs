@@ -226,6 +226,31 @@ namespace EventManagementAPI.Services
                 PricingTierId = ticketTypeDto.PricingTierId
             };
         }
+
+        public async Task<(List<TicketAvailabilityDto> ticketAvailabilities, int totalCount)> GetTicketAvailabilityAsync(int pageNumber = 1, int pageSize = 10)
+        {
+            var pagedEvents = await _eventRepository.GetTicketAvailabilityAsync();
+            var results = pagedEvents.events.Select(CreateTicketAvailabilityDto).ToList();
+            return (results, pagedEvents.totalCount);
+        }
+
+        private TicketAvailabilityDto CreateTicketAvailabilityDto(Event eventEntity)
+        {
+            var ticket = new TicketAvailabilityDto();
+
+            ticket.EventId = eventEntity.Id;
+            ticket.EventName = eventEntity.Name;
+            ticket.VenueName = eventEntity.Venue?.Name ?? "";
+            ticket.EventDate = eventEntity.EventDate;
+            ticket.TicketTypes = eventEntity.TicketTypes?.Select(x => new TicketTypeLiteDto()
+            {
+                Name = x.Name,
+                TotalAvailable = x.TotalAvailable,
+                Remaining = x.Remaining
+            }).ToList() ?? [];
+
+            return ticket;
+        }
         #endregion
     }
 }
