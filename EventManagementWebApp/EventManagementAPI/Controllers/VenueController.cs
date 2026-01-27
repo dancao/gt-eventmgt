@@ -1,4 +1,7 @@
-﻿using EventManagementAPI.Services.Interfaces;
+﻿using EventManagementAPI.Commons;
+using EventManagementAPI.Domain.Entities;
+using EventManagementAPI.Helpers;
+using EventManagementAPI.Services.Interfaces;
 using EventManagementAPI.ViewModels;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace EventManagementAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [Produces("application/json")]
     public class VenueController : ControllerBase
     {
@@ -26,12 +29,12 @@ namespace EventManagementAPI.Controllers
             var validationResult = await _validator.ValidateAsync(venueDto);
             if (!validationResult.IsValid)
             {
-                var customerErrs = validationResult.Errors.Select(x => new { x.PropertyName, x.ErrorMessage}).ToList();
-                return BadRequest(new { validationResult.IsValid, errors = customerErrs });
+                return BadRequest(EventMgtSingleton.Instance.GetValidationResultErrorMessage(validationResult));
             }
 
             await _eventService.AddVenueAsync(venueDto);
-            return CreatedAtAction(nameof(GetVenueById), new { id = venueDto.Id }, venueDto);
+            var apiResponse = EventMgtSingleton.Instance.GetApiResponse(venueDto, ApiResponseStatus.Success, "");
+            return CreatedAtAction(nameof(GetVenueById), new { id = venueDto.Id }, apiResponse);
         }
 
         [HttpGet("{id}", Name = "GetVenueById")]
@@ -41,7 +44,17 @@ namespace EventManagementAPI.Controllers
         {
             var venue = await _eventService.GetVenueByIdAsync(id);
             if(venue == null) return NotFound();
-            return Ok(venue);
+            var apiResponse = EventMgtSingleton.Instance.GetApiResponse(venue, ApiResponseStatus.Success, "");
+            return Ok(apiResponse);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<VenueDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetVenues()
+        {
+            var venues = await _eventService.GetVenuesAsync();
+            var apiResponse = EventMgtSingleton.Instance.GetApiResponse(venues, ApiResponseStatus.Success, "");
+            return Ok(apiResponse);
         }
 
         [HttpPut]
@@ -51,26 +64,21 @@ namespace EventManagementAPI.Controllers
             var validationResult = await _validator.ValidateAsync(venueDto);
             if (!validationResult.IsValid)
             {
-                var customerErrs = validationResult.Errors.Select(x => new { x.PropertyName, x.ErrorMessage }).ToList();
-                return BadRequest(new { validationResult.IsValid, errors = customerErrs });
+                return BadRequest(EventMgtSingleton.Instance.GetValidationResultErrorMessage(validationResult));
             }
 
             var result = await _eventService.UpdateVenueAsync(venueDto);
-            return Ok(result);
+            var apiResponse = EventMgtSingleton.Instance.GetApiResponse(result, ApiResponseStatus.Success, "");
+            return Ok(apiResponse);
         }
 
         [HttpDelete]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
-        public async Task<IActionResult> DeleteVenue(VenueDto venueDto)
+        public async Task<IActionResult> DeleteVenue(int venueId)
         {
-            var validationResult = await _validator.ValidateAsync(venueDto);
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult);
-            }
-
-            var result = await _eventService.UpdateVenueAsync(venueDto);
-            return Ok(result);
+            var result = await _eventService.DeleteVenueAsync(venueId);
+            var apiResponse = EventMgtSingleton.Instance.GetApiResponse(result, ApiResponseStatus.Success, "");
+            return Ok(apiResponse);
         }
     }
 }

@@ -2,13 +2,13 @@
 
 namespace EventManagementAPI.Repositories.Interfaces
 {
-    public interface IEventRepository : IDisposable
+    public interface IEventRepository
     {
-        Task<Event> GetByIdAsync(int id);
+        Task<Event> GetByIdAsync(long id);
         Task<List<Event>> GetAllAsync();
-        Task<int> AddAsync(Event venue);
-        Task<bool> UpdateAsync(Event venue);
-        Task<bool> DeleteAsync(int id);
-        Task<List<Event>> GetActiveEventsByVenueIdAsync(int venueId);
+        Task AddAsync(Event evt);
+        Task UpdateAsync(Event evt);
+        Task DeleteAsync(Event evt);
+        Task<bool> IsVenueAvailable(Event eventItem);
     }
 }

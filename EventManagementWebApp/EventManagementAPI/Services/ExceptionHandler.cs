@@ -13,6 +13,7 @@ namespace EventManagementAPI.Services
             {
                 UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, "Unauthorized"),
                 KeyNotFoundException => (StatusCodes.Status404NotFound, "Resource Not Found"),
+                ArgumentException => (StatusCodes.Status400BadRequest, "Bad Request"),
                 _ => (StatusCodes.Status500InternalServerError, "Internal Server Error")
             };
 

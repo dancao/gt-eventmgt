@@ -1,5 +1,3 @@
-using AutoMapper.Data;
-using EventManagementAPI.AutoMapper;
 using EventManagementAPI.Data;
 using EventManagementAPI.Repositories;
 using EventManagementAPI.Repositories.Interfaces;
@@ -14,11 +12,9 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-//// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-//builder.Services.AddOpenApi();
 
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -39,45 +35,43 @@ builder.Services.AddCors(options =>
         });
 });
 
-//builder.Services.AddAutoMapper(cfg =>
-//{
-//    cfg.AddDataReaderMapping();
-//    cfg.AddProfile<MappingProfile>();
-//}, typeof(Program));
-
+// Validations
 builder.Services.AddScoped<IValidator<VenueDto>, VenueDtoValidator>();
+builder.Services.AddScoped<IValidator<PricingTierDto>, PricingTierDtoValidator>();
+builder.Services.AddScoped<IValidator<EventDto>, EventDtoValidator>();
 
+// Business Services
 builder.Services.AddScoped<IEventService, EventService>();
+builder.Services.AddScoped<IPricingService, PricingService>();
 
-//SQLite
-builder.Services.Configure<DatabaseConfiguration>(builder.Configuration.GetSection("DatabaseConfiguration"));
+// SQLite - EF Core
 var connectionString = builder.Configuration.GetSection("DatabaseConfiguration").GetValue(typeof(string), "ConnectionString")
     ?? "Data Source=Databases/eventmanagement.db";
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(connectionString.ToString()));
 builder.Services.AddScoped<IVenueRepository, VenueRepository>();
+builder.Services.AddScoped<IPricingRepository, PricingRepository>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
 
+// Database Initialize
+builder.Services.Configure<DatabaseConfiguration>(builder.Configuration.GetSection("DatabaseConfiguration"));
 builder.Services.AddHostedService<DatabaseInitializer>();
 
+// ExceptionHandler
 builder.Services.AddExceptionHandler<ExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    //app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI(); // Accessible at /swagger
 }
 
 app.UseHttpsRedirection();
-
 app.UseCors(corsSpecificOrigins);
 app.UseExceptionHandler();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

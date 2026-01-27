@@ -5,4 +5,10 @@
         Active,
         Finished
     }
+
+    public enum ApiResponseStatus
+    {
+        Success,
+        Failed
+    }
 }

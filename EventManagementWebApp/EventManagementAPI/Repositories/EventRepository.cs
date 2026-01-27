@@ -1,13 +1,12 @@
-﻿using EventManagementAPI.Commons;
-using EventManagementAPI.Data;
+﻿using EventManagementAPI.Data;
 using EventManagementAPI.Domain.Entities;
 using EventManagementAPI.Repositories.Interfaces;
-using Microsoft.Data.Sqlite;
+using EventManagementAPI.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventManagementAPI.Repositories
 {
-    public class EventRepository: IEventRepository
+    public class EventRepository : IEventRepository
     {
         private readonly AppDbContext _context;
 
@@ -16,27 +15,14 @@ namespace EventManagementAPI.Repositories
             _context = context;
         }
 
-        public async Task<List<Event>> GetActiveEventsByVenueIdAsync(int venueId)
+        public async Task AddAsync(Event evt)
         {
-            return await _context.Events
-                .AsNoTracking()
-                .Where(x => x.Venue != null && x.Venue.Id == venueId && x.EventStatus == EventStatus.Finished)
-                .OrderByDescending(t => t.CreatedOn)
-                .ToListAsync();
-        }
-        public async Task<int> AddAsync(Event venue)
-        {
-            throw new NotImplementedException();
+            await _context.Events.AddAsync(evt);
         }
 
-        public Task<bool> DeleteAsync(int id)
+        public async Task DeleteAsync(Event evt)
         {
-            throw new NotImplementedException();
-        }
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
+            _context.Events.Remove(evt);
         }
 
         public Task<List<Event>> GetAllAsync()
@@ -44,14 +30,27 @@ namespace EventManagementAPI.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Event> GetByIdAsync(int id)
+        public async Task<Event> GetByIdAsync(long id)
         {
-            throw new NotImplementedException();
+            return await _context.Events.FirstOrDefaultAsync(x => x.Id == id) ?? throw new Exception();
         }
 
-        public Task<bool> UpdateAsync(Event venue)
+        public async Task<bool> IsVenueAvailable(Event eventItem)
         {
-            throw new NotImplementedException();
+            var eventEndDate = eventItem.EventDate.AddDays(eventItem.Duration);
+
+            var result = await _context.Events.AnyAsync(x => x.IsActive && x.VenueId == eventItem.VenueId &&
+                    x.EventStatus == Commons.EventStatus.Active &&
+                    ((eventItem.EventDate >= x.EventDate && eventItem.EventDate < x.EventDate.AddDays(x.Duration)) ||
+                     (eventEndDate >= x.EventDate && eventEndDate < x.EventDate.AddDays(x.Duration)))
+                    );
+            return !result;
+        }
+
+        public Task UpdateAsync(Event evt)
+        {
+            _context.Events.Update(evt);
+            return Task.CompletedTask;
         }
     }
 }

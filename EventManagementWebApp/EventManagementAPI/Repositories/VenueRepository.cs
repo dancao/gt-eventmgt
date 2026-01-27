@@ -33,7 +33,7 @@ namespace EventManagementAPI.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Venue?> GetByIdAsync(int id)
+        public async Task<Venue?> GetByIdAsync(long id)
         {
             return await _context.Venues
                 .AsNoTracking()

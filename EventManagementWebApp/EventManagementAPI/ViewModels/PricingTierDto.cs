@@ -1,8 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using EventManagementAPI.Domain.Entities;
+using Newtonsoft.Json;
 
 namespace EventManagementAPI.ViewModels
 {
-    public class VenueDto
+    public class PricingTierDto
     {
         [JsonProperty("id")]
         public long Id { get; set; }
@@ -13,16 +14,13 @@ namespace EventManagementAPI.ViewModels
         [JsonProperty("description")]
         public string Description { get; set; } = "";
 
-        [JsonProperty("capacity")]
-        public int Capacity { get; set; }
-
-        [JsonProperty("createdBy")]
-        public string CreatedBy { get; set; } = "System";
-
-        [JsonProperty("createdOn")]
-        public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
+        [JsonProperty("price")]
+        public decimal Price { get; set; }
 
         [JsonProperty("isActive")]
         public bool IsActive { get; set; } = true;
+
+        [JsonIgnore]
+        public List<Event> Events { get; set; } = [];
     }
 }

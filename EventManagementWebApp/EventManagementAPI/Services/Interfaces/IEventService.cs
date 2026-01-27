@@ -8,5 +8,9 @@ namespace EventManagementAPI.Services.Interfaces
         Task<VenueDto> GetVenueByIdAsync(int id);
         Task<bool> UpdateVenueAsync(VenueDto venue);
         Task<bool> DeleteVenueAsync(int id);
+        Task<List<VenueDto>> GetVenuesAsync();
+
+        Task AddEventAsync(EventDto eventDto);
+        Task<EventDto> GetEventByIdAsync(long id, bool includeVenue = false, bool includePricingTier = false);
     }
 }
