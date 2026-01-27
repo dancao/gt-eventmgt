@@ -4,6 +4,7 @@ using EventManagementAPI.Services.Interfaces;
 using EventManagementAPI.ViewModels;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace EventManagementAPI.Controllers
 {
@@ -39,17 +40,26 @@ namespace EventManagementAPI.Controllers
         [HttpGet("{id}", Name = "GetEventById")]
         [ProducesResponseType(typeof(EventDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(EventDto), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetEventById(int id, [FromQuery] string incVenue, [FromQuery] string incPricingTier)
+        public async Task<IActionResult> GetEventById(int id, [FromQuery] string incVenue = "", [FromQuery] string incTicketTypes = "")
         {
             if (id <= 0) return BadRequest();
 
-            var includeVenue = string.Equals(incVenue, "Y", StringComparison.OrdinalIgnoreCase);
-            var includePricingTier = string.Equals(incPricingTier, "Y", StringComparison.OrdinalIgnoreCase);
-            var evt = await _eventService.GetEventByIdAsync(id, includeVenue, includePricingTier);
+            var evt = await _eventService.GetEventByIdAsync(id, 
+                                string.Equals(incVenue, "Y", StringComparison.OrdinalIgnoreCase),
+                                string.Equals(incTicketTypes, "Y", StringComparison.OrdinalIgnoreCase));
 
             if (evt == null) return NotFound();
 
             var apiResponse = EventMgtSingleton.Instance.GetApiResponse(evt, ApiResponseStatus.Success, "");
+            return Ok(apiResponse);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(EventDto), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllEvents()
+        {
+            var results = await _eventService.GetAllEventsAsync();
+            var apiResponse = EventMgtSingleton.Instance.GetApiResponse(results, ApiResponseStatus.Success, "");
             return Ok(apiResponse);
         }
     }

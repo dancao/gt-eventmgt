@@ -39,6 +39,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IValidator<VenueDto>, VenueDtoValidator>();
 builder.Services.AddScoped<IValidator<PricingTierDto>, PricingTierDtoValidator>();
 builder.Services.AddScoped<IValidator<EventDto>, EventDtoValidator>();
+builder.Services.AddScoped<IValidator<TicketTypeDto>, TicketTypeDtoValidator>();
 
 // Business Services
 builder.Services.AddScoped<IEventService, EventService>();

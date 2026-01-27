@@ -130,23 +130,32 @@ namespace EventManagementAPI.Services
             var isVenueAvailable = await _eventRepository.IsVenueAvailable(evt);
             if (!isVenueAvailable) throw new ArgumentException("Venue is not available.");
 
-            var pricingTier = await _pricingRepository.GetPricingTierByIdAsync(eventDto.PricingTierId);
-            if (pricingTier == null || !pricingTier.IsActive) throw new ArgumentException("Pricing Tier is invalid.");
-
+            foreach (var tt in eventDto.TicketTypes)
+            {
+                var pricingTier = await _pricingRepository.GetPricingTierByIdAsync(tt.PricingTierId);
+                if (pricingTier == null || !pricingTier.IsActive) throw new ArgumentException("Pricing Tier is invalid.");
+            }
 
             await _eventRepository.AddAsync(evt);
             await _dbContext.SaveChangesAsync();
+            eventDto.Id = evt.Id;
         }
 
-        public async Task<EventDto> GetEventByIdAsync(long id, bool includeVenue = false, bool includePricingTier = false)
+        public async Task<EventDto> GetEventByIdAsync(long id, bool includeVenue = false, bool includeTicketTypes = false)
         {
             IQueryable<Event> query = _dbContext.Events;
 
             if (includeVenue) query = query.Include(x => x.Venue);
-            if (includePricingTier) query = query.Include(x => x.PricingTier);
+            if (includeTicketTypes) query = query.Include(x => x.TicketTypes).ThenInclude(x => x.PricingTier);
 
             var eventItem = await query.FirstOrDefaultAsync(x => x.Id == id) ?? throw new ArgumentException("Event is not existed.");
             return EventMgtSingleton.Instance.ToEventDto(eventItem);
+        }
+
+        public async Task<List<EventDto>> GetAllEventsAsync()
+        {
+            var results = await _eventRepository.GetAllAsync();
+            return results.Select(EventMgtSingleton.Instance.ToEventDto).ToList();
         }
         #endregion
     }

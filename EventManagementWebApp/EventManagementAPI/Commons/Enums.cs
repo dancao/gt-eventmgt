@@ -11,4 +11,11 @@
         Success,
         Failed
     }
+
+    public enum TicketStatus
+    {
+        Available,
+        Reserved,
+        Sold
+    }
 }

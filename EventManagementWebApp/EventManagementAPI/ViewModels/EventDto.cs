@@ -16,12 +16,6 @@ namespace EventManagementAPI.ViewModels
         [JsonProperty("description")]
         public string Description { get; set; } = "";
 
-        [JsonIgnore]
-        public long TotalTicketsAvail { get; set; }
-
-        [JsonIgnore]
-        public long TotalSoldTicket { get; set; }
-
         [JsonProperty("eventDate")]
         public DateTime? EventDate { get; set; }
 
@@ -41,15 +35,12 @@ namespace EventManagementAPI.ViewModels
         public long VenueId { get; set; }
 
         [JsonProperty("Venue")]
-        public Venue? Venue { get; set; }
-
-        [JsonProperty("PricingTier")]
-        public PricingTier? PricingTier { get; set; }
-
-        [JsonProperty("pricingTierId")]
-        public long PricingTierId { get; set; }
+        public VenueDto? Venue { get; set; }
 
         [JsonProperty("isActive")]
         public bool IsActive { get; set; } = true;
+
+        [JsonProperty("ticketTypes")]
+        public List<TicketTypeDto> TicketTypes { get; set; } = [];
     }
 }

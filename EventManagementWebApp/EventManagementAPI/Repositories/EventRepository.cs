@@ -25,14 +25,20 @@ namespace EventManagementAPI.Repositories
             _context.Events.Remove(evt);
         }
 
-        public Task<List<Event>> GetAllAsync()
+        public async Task<List<Event>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Events
+                .Include(x => x.Venue)
+                .Include(x => x.TicketTypes).ThenInclude(tt => tt.PricingTier)
+                .ToListAsync();
         }
 
         public async Task<Event> GetByIdAsync(long id)
         {
-            return await _context.Events.FirstOrDefaultAsync(x => x.Id == id) ?? throw new Exception();
+            return await _context.Events
+                .Include(x => x.Venue)
+                .Include(x => x.TicketTypes).ThenInclude(tt => tt.PricingTier)
+                .FirstOrDefaultAsync(x => x.Id == id) ?? throw new Exception();
         }
 
         public async Task<bool> IsVenueAvailable(Event eventItem)

@@ -45,16 +45,19 @@ namespace EventManagementAPI.Helpers
         public Event ToEvent(EventDto eventDto)
         {
             var evt = new Event();
-            evt.Id = eventDto.Id;
             evt.Name = eventDto.Name;
             evt.Description = eventDto.Description;
             evt.EventDate = eventDto.EventDate.HasValue ? eventDto.EventDate.Value : throw new Exception("EventDate is required.");
             evt.Duration = eventDto.Duration;
             evt.VenueId = eventDto.VenueId;
-            evt.PricingTierId = eventDto.PricingTierId;
             evt.IsActive = eventDto.IsActive;
-            evt.TotalTicketsAvail = eventDto.TotalTicketsAvail; // some time we want to sell more tickets than Venue Capacity
-            evt.TotalSoldTicket = eventDto.TotalSoldTicket;
+            evt.TicketTypes = eventDto.TicketTypes.Select(tt => new TicketType()
+            {
+                Name = tt.Name,
+                PricingTierId = tt.PricingTierId,
+                TotalAvailable = tt.TotalAvailable,
+                Remaining = tt.Remaining
+            }).ToList();
             return evt;
         }
 
@@ -67,19 +70,31 @@ namespace EventManagementAPI.Helpers
             evtDto.EventDate = eventItem.EventDate;
             evtDto.Duration = eventItem.Duration;
             evtDto.VenueId = eventItem.VenueId;
-            evtDto.Venue = eventItem.Venue;
-            evtDto.PricingTierId = eventItem.PricingTierId;
-            evtDto.PricingTier = eventItem.PricingTier;
+            evtDto.Venue = new VenueDto()
+            {
+                Name = eventItem.Venue?.Name ?? "",
+                Description = eventItem.Venue?.Description ?? "",
+                Id = eventItem.Id
+            };
             evtDto.IsActive = eventItem.IsActive;
-            evtDto.TotalTicketsAvail = eventItem.TotalTicketsAvail;
-            evtDto.TotalSoldTicket = eventItem.TotalSoldTicket;
-            evtDto.IsActive = eventItem.IsActive;
+            evtDto.TicketTypes = eventItem.TicketTypes.Select(tt => new TicketTypeDto()
+            {
+                Id = tt.Id,
+                Name = tt.Name,
+                PricingTierId = tt.PricingTierId,
+                PricingTier = new PricingTierDto() { 
+                    Name = tt.PricingTier?.Name ?? "",
+                    Price = tt.PricingTier?.Price ?? -1,
+                },
+                TotalAvailable = tt.TotalAvailable,
+                Remaining = tt.Remaining
+            }).ToList();
             return evtDto;
         }
 
         public DtoValidationResult GetValidationResultErrorMessage(ValidationResult validationResult)
         {
-            var customErrs = validationResult.Errors.Select(x => 
+            var customErrs = validationResult.Errors.Select(x =>
                 new ResultDetails() { PropertyName = x.PropertyName, ErrorMessage = x.ErrorMessage }).ToList();
             return new DtoValidationResult()
             {
@@ -93,7 +108,7 @@ namespace EventManagementAPI.Helpers
             return new ApiResponse<T>()
             {
                 Status = status,
-                Data = data, 
+                Data = data,
                 ErrorMessage = errorMessage
             };
         }

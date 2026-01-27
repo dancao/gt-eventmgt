@@ -10,7 +10,7 @@ namespace EventManagementAPI.Commons
         public ApiResponseStatus Status { get; set; }
 
         [JsonProperty("data")]
-        public T Data { get; set; }
+        public T? Data { get; set; }
 
         [JsonProperty("errorMessage")]
         public string ErrorMessage { get; set; } = "";

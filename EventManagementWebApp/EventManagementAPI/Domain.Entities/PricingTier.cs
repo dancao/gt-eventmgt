@@ -8,6 +8,6 @@
         public decimal Price { get; set; }
         public bool IsActive { get; set; } = true;
 
-        public List<Event> Events { get; set; } = [];
+        public List<TicketType> TicketTypes { get; set; } = [];
     }
 }

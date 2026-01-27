@@ -8,31 +8,29 @@ namespace EventManagementAPI.Data
         public DbSet<Venue> Venues => Set<Venue>();
         public DbSet<PricingTier> PricingTiers => Set<PricingTier>();
         public DbSet<Event> Events => Set<Event>();
+        public DbSet<TicketType> TicketTypes => Set<TicketType>();
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<Venue>().HasKey(t => t.Id);
-            //modelBuilder.Entity<Venue>().Property(t => t.Name).IsRequired().HasMaxLength(50);
-
-            //modelBuilder.Entity<PricingTier>().HasKey(t => t.Id);
-            //modelBuilder.Entity<PricingTier>().Property(t => t.Name).IsRequired().HasMaxLength(50);
-
-            //modelBuilder.Entity<Event>().HasKey(t => t.Id);
-            //modelBuilder.Entity<Event>().Property(t => t.Name).IsRequired().HasMaxLength(50);
-
             modelBuilder.Entity<Event>()
                 .HasOne(e => e.Venue)
                 .WithMany(v => v.Events)
                 .HasForeignKey(e => e.VenueId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade);   // Delete Events if Venue deleted
 
-            modelBuilder.Entity<Event>()
-                .HasOne(e => e.PricingTier)
-                .WithMany(p => p.Events)
-                .HasForeignKey(e => e.PricingTierId)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<TicketType>()
+            .HasOne(tt => tt.Event)
+            .WithMany(e => e.TicketTypes)
+            .HasForeignKey(tt => tt.EventId)
+            .OnDelete(DeleteBehavior.Cascade);  // Delete ticket types if event deleted
+
+            modelBuilder.Entity<TicketType>()
+            .HasOne(tt => tt.PricingTier)
+            .WithMany(pt => pt.TicketTypes)
+            .HasForeignKey(tt => tt.PricingTierId)
+            .OnDelete(DeleteBehavior.Cascade);   // Delete ticket types if pricing tier deleted
         }
     }
 }
