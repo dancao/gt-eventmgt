@@ -13,12 +13,11 @@ namespace EventManagementAPI.Validations
                 .MaximumLength(100);
 
             RuleFor(x => x.Description)
-                .Must(x => string.IsNullOrWhiteSpace(x) || x.Length < 400).WithMessage("Description is too long");
+                .Must(x => string.IsNullOrWhiteSpace(x) || x.Length < 100).WithMessage("Description is too long");
 
             RuleFor(x => x.EventDate)
                 .NotNull()
-                .GreaterThanOrEqualTo(DateTime.UtcNow.AddDays(7)) // booking 7 days in advanced
-                ;
+                .GreaterThanOrEqualTo(DateTime.UtcNow);
 
             RuleFor(x => x.Duration).GreaterThan(0);
             RuleFor(x => x.VenueId).GreaterThan(0);

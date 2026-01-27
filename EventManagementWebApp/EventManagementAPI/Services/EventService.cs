@@ -15,6 +15,7 @@ namespace EventManagementAPI.Services
         private readonly IPricingRepository _pricingRepository;
         private readonly AppDbContext _dbContext;
         private const string VenueIsNotExisted = "Venue is not existed.";
+        private const string EventIsNotExisted = "Event is not existed.";
 
         public EventService(IVenueRepository venueRepository, IEventRepository eventRepository,
             AppDbContext context, IPricingRepository pricingRepository)
@@ -125,7 +126,7 @@ namespace EventManagementAPI.Services
             var venue = await _venueRepository.GetByIdAsync((int)eventDto.VenueId);
             if (venue == null || !venue.IsActive) throw new ArgumentException("Venue is invalid.");
 
-            var evt = EventMgtSingleton.Instance.ToEvent(eventDto);
+            var evt = EventMgtSingleton.Instance.CreateNewEvent(eventDto);
 
             var isVenueAvailable = await _eventRepository.IsVenueAvailable(evt);
             if (!isVenueAvailable) throw new ArgumentException("Venue is not available.");
@@ -141,7 +142,7 @@ namespace EventManagementAPI.Services
             eventDto.Id = evt.Id;
         }
 
-        public async Task<EventDto> GetEventByIdAsync(long id, bool includeVenue = false, bool includeTicketTypes = false)
+        private async Task<Event> GetEventEntityByIdAsync(long id, bool includeVenue = false, bool includeTicketTypes = false)
         {
             IQueryable<Event> query = _dbContext.Events;
 
@@ -151,7 +152,12 @@ namespace EventManagementAPI.Services
                 query = query.Include(x => x.TicketTypes).ThenInclude(x => x.Tickets);
             }
 
-            var eventItem = await query.FirstOrDefaultAsync(x => x.Id == id) ?? throw new ArgumentException("Event is not existed.");
+            return await query.FirstOrDefaultAsync(x => x.Id == id) ?? throw new ArgumentException("Event is not existed.");
+
+        }
+        public async Task<EventDto> GetEventByIdAsync(long id, bool includeVenue = false, bool includeTicketTypes = false)
+        {
+            var eventItem = await GetEventEntityByIdAsync(id, includeVenue, includeTicketTypes);
             return EventMgtSingleton.Instance.ToEventDto(eventItem);
         }
 
@@ -159,6 +165,66 @@ namespace EventManagementAPI.Services
         {
             var results = await _eventRepository.GetAllAsync();
             return results.Select(EventMgtSingleton.Instance.ToEventDto).ToList();
+        }
+
+        public async Task<bool> UpdateEventAsync(EventDto eventDto)
+        {
+            if (eventDto == null || string.IsNullOrWhiteSpace(eventDto.Name) || eventDto.Id <= 0) throw new ArgumentException(nameof(eventDto));
+
+            var existedEvent = await GetEventEntityByIdAsync(eventDto.Id, true, true);
+            if (existedEvent == null) throw new Exception(EventIsNotExisted);
+            if(existedEvent.EventStatus == Commons.EventStatus.Finished || !existedEvent.IsActive) throw new Exception("Event closed or not active.");
+
+            existedEvent.Name = eventDto.Name;
+            existedEvent.VenueId = eventDto.VenueId;
+            existedEvent.EventDate = eventDto.EventDate.HasValue ? eventDto.EventDate.Value : throw new ArgumentException("EventDate is invalid.");
+            existedEvent.Duration = eventDto.Duration;
+
+            foreach (var ticketTypeDto in eventDto.TicketTypes)
+            {
+                var existedTicketType = existedEvent.TicketTypes.FirstOrDefault(x => x.Id == ticketTypeDto.Id);
+                if (existedTicketType == null)
+                {
+                    existedEvent.TicketTypes.Add(CreateTicketTypeEntity(ticketTypeDto));
+                }
+                else
+                {
+                    existedTicketType.Name = ticketTypeDto.Name;
+                    existedTicketType.TotalAvailable = ticketTypeDto.TotalAvailable;
+                    existedTicketType.Remaining = ticketTypeDto.Remaining;
+                    existedTicketType.PricingTierId = ticketTypeDto.PricingTierId;
+                }
+            }
+            await _eventRepository.UpdateAsync(existedEvent);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteEventAsync(long id)
+        {
+            var existedEvent = await GetEventEntityByIdAsync(id, true, true);
+            if(existedEvent == null) throw new ArgumentException(EventIsNotExisted);
+
+            if (existedEvent.TicketTypes != null && existedEvent.TicketTypes.Any(x => x.Tickets != null && x.Tickets.Count > 0))
+            {
+                // TODO: refund case
+                throw new ArgumentException("Event needs to be closed or finished or inactive to delete.");
+            }
+
+            await _eventRepository.DeleteAsync(existedEvent);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        private TicketType CreateTicketTypeEntity(TicketTypeDto ticketTypeDto)
+        {
+            return new TicketType()
+            {
+                Name = ticketTypeDto.Name,
+                TotalAvailable = ticketTypeDto.TotalAvailable,
+                Remaining = ticketTypeDto.Remaining,
+                PricingTierId = ticketTypeDto.PricingTierId
+            };
         }
         #endregion
     }

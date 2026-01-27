@@ -24,16 +24,15 @@ namespace EventManagementAPI.Services
 
             try
             {
-                // Atomic decrement with check
                 var updatedRows = await _dbContext.TicketTypes
                     .Where(tt => tt.Id == purchaseTicketDto.TicketTypeId && tt.Remaining >= purchaseTicketDto.Quantity)
                     .ExecuteUpdateAsync(setters => setters.SetProperty(tt => tt.Remaining, tt => tt.Remaining - purchaseTicketDto.Quantity));
 
                 if (updatedRows == 0)
                 {
-                    // Insufficient inventory or concurrent update
+                    // Insufficient inventory or concurrent update - Oversell prevented
                     await transaction.RollbackAsync();
-                    return false;  // Oversell prevented
+                    return false;
                 }
 
                 var ticket = new Ticket

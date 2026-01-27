@@ -42,7 +42,7 @@ namespace EventManagementAPI.Helpers
             return venueDto;
         }
 
-        public Event ToEvent(EventDto eventDto)
+        public Event CreateNewEvent(EventDto eventDto)
         {
             var evt = new Event();
             evt.Name = eventDto.Name;
@@ -56,7 +56,8 @@ namespace EventManagementAPI.Helpers
                 Name = tt.Name,
                 PricingTierId = tt.PricingTierId,
                 TotalAvailable = tt.TotalAvailable,
-                Remaining = tt.Remaining
+                Remaining = tt.Remaining,
+                Tickets = new List<Ticket>()
             }).ToList();
             return evt;
         }

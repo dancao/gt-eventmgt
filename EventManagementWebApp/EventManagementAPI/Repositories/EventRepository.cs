@@ -1,7 +1,6 @@
 ﻿using EventManagementAPI.Data;
 using EventManagementAPI.Domain.Entities;
 using EventManagementAPI.Repositories.Interfaces;
-using EventManagementAPI.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventManagementAPI.Repositories

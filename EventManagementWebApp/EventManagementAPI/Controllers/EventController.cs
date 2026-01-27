@@ -42,6 +42,37 @@ namespace EventManagementAPI.Controllers
             return CreatedAtAction(nameof(GetEventById), new { id = eventDto.Id }, apiResponse);
         }
 
+        [HttpPut]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateEvent(EventDto eventDto)
+        {
+            if (eventDto == null || eventDto.Id <= 0) return BadRequest();
+
+            var validationResult = await _validator.ValidateAsync(eventDto);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(EventMgtSingleton.Instance.GetValidationResultErrorMessage(validationResult));
+            }
+
+            await _eventService.UpdateEventAsync(eventDto);
+            var apiResponse = EventMgtSingleton.Instance.GetApiResponse(eventDto, ApiResponseStatus.Success, "Updated successful.");
+            return Ok(apiResponse);
+        }
+
+        [HttpDelete]
+        [Route("{eventId}")]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        public async Task<IActionResult> DeleteEvent(long eventId)
+        {
+            if (eventId <= 0) return BadRequest();
+
+            var result = await _eventService.DeleteEventAsync(eventId);
+            var apiResponse = EventMgtSingleton.Instance.GetApiResponse(result,
+                result ? ApiResponseStatus.Success : ApiResponseStatus.Failed,
+                result ? "Delete successful.": "Delete failed.");
+            return Ok(apiResponse);
+        }
+
         [HttpGet("{id}", Name = "GetEventById")]
         [ProducesResponseType(typeof(EventDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(EventDto), StatusCodes.Status404NotFound)]

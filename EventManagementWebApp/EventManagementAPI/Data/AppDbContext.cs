@@ -33,11 +33,10 @@ namespace EventManagementAPI.Data
             .HasForeignKey(tt => tt.PricingTierId)
             .OnDelete(DeleteBehavior.Cascade);   // Delete ticket types if pricing tier deleted
 
-            modelBuilder.Entity<Ticket>()
-                .HasOne(e => e.TicketType)
-                .WithMany(tt => tt.Tickets)
-                .HasForeignKey(e => e.TicketTypeId)
-                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<TicketType>()
+            .HasMany(tt => tt.Tickets)
+            .WithOne(t => t.TicketType)
+            .HasForeignKey(t => t.TicketTypeId);
         }
     }
 }
