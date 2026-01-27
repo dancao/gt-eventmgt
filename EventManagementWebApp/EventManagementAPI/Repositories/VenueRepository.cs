@@ -39,7 +39,7 @@ namespace EventManagementAPI.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(t => t.Id == id);
         }
-
+        
         public Task UpdateAsync(Venue venue)
         {
             _context.Venues.Update(venue);

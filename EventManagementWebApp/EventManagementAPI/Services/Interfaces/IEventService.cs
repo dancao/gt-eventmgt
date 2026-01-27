@@ -12,5 +12,6 @@ namespace EventManagementAPI.Services.Interfaces
 
         Task AddEventAsync(EventDto eventDto);
         Task<EventDto> GetEventByIdAsync(long id, bool includeVenue = false, bool includePricingTier = false);
+        Task<List<VenueDto>> SearchVenuesAsync(string venueName, string desc, int minCapacity, int maxCapacity, bool isActive = true);
     }
 }

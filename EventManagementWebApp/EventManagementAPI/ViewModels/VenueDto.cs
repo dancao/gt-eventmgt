@@ -13,6 +13,9 @@ namespace EventManagementAPI.ViewModels
         [JsonProperty("description")]
         public string Description { get; set; } = "";
 
+        [JsonProperty("address")]
+        public string Address { get; set; } = "";
+
         [JsonProperty("capacity")]
         public int Capacity { get; set; }
 

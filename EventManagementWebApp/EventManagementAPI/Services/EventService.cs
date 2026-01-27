@@ -5,7 +5,6 @@ using EventManagementAPI.Repositories.Interfaces;
 using EventManagementAPI.Services.Interfaces;
 using EventManagementAPI.ViewModels;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata.Ecma335;
 
 namespace EventManagementAPI.Services
 {
@@ -71,6 +70,7 @@ namespace EventManagementAPI.Services
             if (existedVenue == null) throw new Exception(VenueIsNotExisted);
             existedVenue.Name = venueDto.Name;
             existedVenue.Description = venueDto.Description;
+            existedVenue.Address = venueDto.Address;
             existedVenue.Capacity = venueDto.Capacity;
             existedVenue.IsActive = venueDto.IsActive;
 
@@ -85,6 +85,36 @@ namespace EventManagementAPI.Services
             var venues = await _venueRepository.GetAllAsync();
             return venues.Select(EventMgtSingleton.Instance.ToVenueDto).ToList();
         }
+
+        public async Task<List<VenueDto>> SearchVenuesAsync(string venueName, string desc, int minCapacity, int maxCapacity, bool isActive = true)
+        {
+            IQueryable<Venue> query = _dbContext.Venues;
+
+            if (!string.IsNullOrWhiteSpace(venueName))
+            {
+                query = query.Where(x => x.Name.ToLower().StartsWith(venueName.ToLower()));
+            }
+            if (!string.IsNullOrWhiteSpace(desc))
+            {
+                query = query.Where(x => !string.IsNullOrWhiteSpace(desc) && x.Description.ToLower().StartsWith(desc.ToLower()));
+            }
+            if (minCapacity > 0)
+            {
+                query = query.Where(x => x.Capacity >= minCapacity);
+            }
+            if (maxCapacity > 0)
+            {
+                query = query.Where(x => x.Capacity <= maxCapacity);
+            }
+            if (isActive)
+            {
+                query = query.Where(x => x.IsActive);
+            }
+
+            var results = await query.OrderBy(x => x.Name).ToListAsync();
+            return results?.Select(EventMgtSingleton.Instance.ToVenueDto).ToList() ?? [];
+        }
+
         #endregion
 
         #region Event
@@ -103,7 +133,7 @@ namespace EventManagementAPI.Services
             var pricingTier = await _pricingRepository.GetPricingTierByIdAsync(eventDto.PricingTierId);
             if (pricingTier == null || !pricingTier.IsActive) throw new ArgumentException("Pricing Tier is invalid.");
 
-            
+
             await _eventRepository.AddAsync(evt);
             await _dbContext.SaveChangesAsync();
         }
@@ -116,7 +146,7 @@ namespace EventManagementAPI.Services
             if (includePricingTier) query = query.Include(x => x.PricingTier);
 
             var eventItem = await query.FirstOrDefaultAsync(x => x.Id == id) ?? throw new ArgumentException("Event is not existed.");
-            return EventMgtSingleton.Instance.ToEventDto(eventItem) ;
+            return EventMgtSingleton.Instance.ToEventDto(eventItem);
         }
         #endregion
     }

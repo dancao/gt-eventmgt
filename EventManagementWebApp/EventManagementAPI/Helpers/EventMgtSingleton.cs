@@ -21,6 +21,7 @@ namespace EventManagementAPI.Helpers
             venue.Id = venueDto.Id;
             venue.Name = venueDto.Name;
             venue.Description = venueDto.Description;
+            venue.Address = venueDto.Address;
             venue.Capacity = venueDto.Capacity;
             venue.IsActive = venueDto.IsActive;
 
@@ -33,6 +34,7 @@ namespace EventManagementAPI.Helpers
             venueDto.Id = (int)venue.Id;
             venueDto.Name = venue.Name;
             venueDto.Description = venue.Description;
+            venueDto.Address = venue.Address;
             venueDto.Capacity = (int)venue.Capacity;
             venueDto.CreatedOn = venue.CreatedOn;
             venueDto.IsActive = venue.IsActive;
