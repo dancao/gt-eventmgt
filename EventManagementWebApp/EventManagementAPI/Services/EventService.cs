@@ -146,7 +146,10 @@ namespace EventManagementAPI.Services
             IQueryable<Event> query = _dbContext.Events;
 
             if (includeVenue) query = query.Include(x => x.Venue);
-            if (includeTicketTypes) query = query.Include(x => x.TicketTypes).ThenInclude(x => x.PricingTier);
+            if (includeTicketTypes)
+            {
+                query = query.Include(x => x.TicketTypes).ThenInclude(x => x.Tickets);
+            }
 
             var eventItem = await query.FirstOrDefaultAsync(x => x.Id == id) ?? throw new ArgumentException("Event is not existed.");
             return EventMgtSingleton.Instance.ToEventDto(eventItem);

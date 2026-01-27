@@ -28,5 +28,7 @@ namespace EventManagementAPI.ViewModels
 
         [JsonProperty("pricingTierId")]
         public long PricingTierId { get; set; }
+
+        public List<TicketDto> Tickets { get; set; } = [];
     }
 }

@@ -14,12 +14,17 @@ namespace EventManagementAPI.Controllers
     public class EventController : ControllerBase
     {
         private readonly IEventService _eventService;
+        private readonly ITicketService _ticketService;
         private IValidator<EventDto> _validator;
+        private IValidator<PurchaseTicketDto> _purchaseTicketValidator;
 
-        public EventController(IEventService eventService, IValidator<EventDto> validator)
+        public EventController(IEventService eventService, ITicketService ticketService, IValidator<EventDto> validator,
+            IValidator<PurchaseTicketDto> purchaseTicketValidator)
         {
             _eventService = eventService;
+            _ticketService = ticketService;
             _validator = validator;
+            _purchaseTicketValidator = purchaseTicketValidator;
         }
 
         [HttpPost]
@@ -60,6 +65,24 @@ namespace EventManagementAPI.Controllers
         {
             var results = await _eventService.GetAllEventsAsync();
             var apiResponse = EventMgtSingleton.Instance.GetApiResponse(results, ApiResponseStatus.Success, "");
+            return Ok(apiResponse);
+        }
+
+        [HttpPost]
+        [Route("ticket")]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        public async Task<IActionResult> PurchaseTicket(PurchaseTicketDto purchaseTicketDto)
+        {
+            var validationResult = await _purchaseTicketValidator.ValidateAsync(purchaseTicketDto);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(EventMgtSingleton.Instance.GetValidationResultErrorMessage(validationResult));
+            }
+
+            var result = await _ticketService.PurchaseTicketAsync(purchaseTicketDto);
+            var message = result ? "Purchase successful." : "Purchase failed, please try again later.";
+            var apiResponse = EventMgtSingleton.Instance.GetApiResponse(result, 
+                result ? ApiResponseStatus.Success : ApiResponseStatus.Failed, message);
             return Ok(apiResponse);
         }
     }

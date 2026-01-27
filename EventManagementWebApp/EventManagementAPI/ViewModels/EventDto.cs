@@ -1,5 +1,4 @@
 ﻿using EventManagementAPI.Commons;
-using EventManagementAPI.Domain.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 

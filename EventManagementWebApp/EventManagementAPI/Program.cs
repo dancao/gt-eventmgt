@@ -40,10 +40,12 @@ builder.Services.AddScoped<IValidator<VenueDto>, VenueDtoValidator>();
 builder.Services.AddScoped<IValidator<PricingTierDto>, PricingTierDtoValidator>();
 builder.Services.AddScoped<IValidator<EventDto>, EventDtoValidator>();
 builder.Services.AddScoped<IValidator<TicketTypeDto>, TicketTypeDtoValidator>();
+builder.Services.AddScoped<IValidator<PurchaseTicketDto>, PurchaseTicketDtoValidator>();
 
 // Business Services
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IPricingService, PricingService>();
+builder.Services.AddScoped<ITicketService, TicketService>();
 
 // SQLite - EF Core
 var connectionString = builder.Configuration.GetSection("DatabaseConfiguration").GetValue(typeof(string), "ConnectionString")

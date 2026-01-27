@@ -1,5 +1,4 @@
-﻿using EventManagementAPI.Domain.Entities;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace EventManagementAPI.ViewModels
 {
@@ -21,6 +20,6 @@ namespace EventManagementAPI.ViewModels
         public bool IsActive { get; set; } = true;
 
         [JsonIgnore]
-        public List<Event> Events { get; set; } = [];
+        public List<EventDto> Events { get; set; } = [];
     }
 }

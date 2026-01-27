@@ -9,6 +9,7 @@ namespace EventManagementAPI.Data
         public DbSet<PricingTier> PricingTiers => Set<PricingTier>();
         public DbSet<Event> Events => Set<Event>();
         public DbSet<TicketType> TicketTypes => Set<TicketType>();
+        public DbSet<Ticket> Tickets => Set<Ticket>();
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -31,6 +32,12 @@ namespace EventManagementAPI.Data
             .WithMany(pt => pt.TicketTypes)
             .HasForeignKey(tt => tt.PricingTierId)
             .OnDelete(DeleteBehavior.Cascade);   // Delete ticket types if pricing tier deleted
+
+            modelBuilder.Entity<Ticket>()
+                .HasOne(e => e.TicketType)
+                .WithMany(tt => tt.Tickets)
+                .HasForeignKey(e => e.TicketTypeId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

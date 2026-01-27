@@ -21,5 +21,7 @@ namespace EventManagementAPI.Domain.Entities
 
         [JsonProperty("pricingTierId")]
         public long PricingTierId { get; set; }
+
+        public List<Ticket> Tickets { get; set; } = [];
     }
 }

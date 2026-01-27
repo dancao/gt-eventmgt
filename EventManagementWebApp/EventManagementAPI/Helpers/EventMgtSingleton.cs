@@ -82,12 +82,20 @@ namespace EventManagementAPI.Helpers
                 Id = tt.Id,
                 Name = tt.Name,
                 PricingTierId = tt.PricingTierId,
-                PricingTier = new PricingTierDto() { 
+                PricingTier = new PricingTierDto()
+                {
                     Name = tt.PricingTier?.Name ?? "",
                     Price = tt.PricingTier?.Price ?? -1,
                 },
                 TotalAvailable = tt.TotalAvailable,
-                Remaining = tt.Remaining
+                Remaining = tt.Remaining,
+                Tickets = tt.Tickets.Select(ticket => new TicketDto()
+                {
+                    Id = ticket.Id,
+                    BuyerName = ticket.BuyerName,
+                    Quanlity = ticket.Quanlity,
+                    PurchasedDate = ticket.PurchasedDate
+                }).ToList()
             }).ToList();
             return evtDto;
         }
