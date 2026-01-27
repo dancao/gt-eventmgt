@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="EventManagementAPI.UnitTest/EventManagementAPI.UnitTest.csproj" />
+  <Project Path="EventManagementAPI/EventManagementAPI.csproj" />
+</Solution>
