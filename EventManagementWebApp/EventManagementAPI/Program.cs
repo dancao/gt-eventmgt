@@ -9,11 +9,14 @@ using EventManagementAPI.ViewModels;
 using FluentValidation;
 using Hangfire;
 using Hangfire.Storage.SQLite;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Polly;
 using Polly.CircuitBreaker;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -98,6 +101,31 @@ builder.Services.AddHostedService<DatabaseInitializer>();
 builder.Services.AddExceptionHandler<ExceptionHandler>();
 builder.Services.AddProblemDetails();
 
+// JWT Authentication
+var jwtSettings = builder.Configuration.GetSection(JwtSettings.JwtSettingsName).Get<JwtSettings>()!;
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings.Issuer,
+        ValidAudience = jwtSettings.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
+    };
+    options.IncludeErrorDetails = builder.Environment.IsDevelopment(); // show details in development
+});
+
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -109,6 +137,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors(corsSpecificOrigins);
 app.UseExceptionHandler();
+app.UseAuthentication(); // JWT Authentication
 app.UseAuthorization();
 app.MapControllers();
 

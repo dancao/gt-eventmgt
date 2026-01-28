@@ -3,10 +3,12 @@ using EventManagementAPI.Helpers;
 using EventManagementAPI.Services.Interfaces;
 using EventManagementAPI.ViewModels;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventManagementAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PricingController : ControllerBase
