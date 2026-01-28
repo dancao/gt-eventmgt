@@ -1,0 +1,580 @@
+{
+  "info": {
+    "_postman_id": "1352d9b4-d5a4-4581-9dc6-f922e55878ac",
+    "name": "EventMgt Testing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "296441"
+  },
+  "item": [
+    {
+      "name": "Venues",
+      "item": [
+        {
+          "name": "GetVenue",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://localhost:7042/api/venue/1",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7042",
+              "path": [
+                "api",
+                "venue",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Venue",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidGVzdCIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJjdXN0b20tY2xhaW0iOiJzb21lLXZhbHVlIiwiZXhwIjoxNzY5NjE5NzgxLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MDQyIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzA0MiJ9.9J_VeV2OG8_k0cdoF1gGcO8bXq26FG1kuBmMA7xXXF4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Townhall Wheaton\",\r\n    \"address\": \"123 Main St.\",\r\n    \"description\": \"down town wheaton\",\r\n    \"capacity\": 200\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://localhost:7042/api/venue",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7042",
+              "path": [
+                "api",
+                "venue"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Venue",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id\": 1,\r\n    \"name\": \"Vanue 1\",\r\n    \"description\": \"DESC 1111\",\r\n    \"capacity\": 100,\r\n    \"createdBy\": \"System\",\r\n    \"createdOn\": \"2026-01-27T00:50:18.9633387Z\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://localhost:7042/venue",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7042",
+              "path": [
+                "venue"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get all venues",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://localhost:7042/api/venue",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7042",
+              "path": [
+                "api",
+                "venue"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search venues",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://localhost:7042/api/venue/search?maxCapacity=200",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7042",
+              "path": [
+                "api",
+                "venue",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "maxCapacity",
+                  "value": "200"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Events",
+      "item": [
+        {
+          "name": "Add Event",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Event 3\",\r\n    \"description\": \"DESC\",\r\n    \"eventDate\": \"2026-06-01T12:05:09Z\",\r\n    \"duration\": 5,\r\n    \"venueId\": 3,    \r\n    \"ticketTypes\": [\r\n        {\r\n            \"name\": \"VIP\",\r\n            \"totalAvailable\": 5,\r\n            \"remaining\": 5,\r\n            \"pricingTierId\": 1\r\n        },\r\n        {\r\n            \"name\": \"General Admission\",\r\n            \"totalAvailable\": 20,\r\n            \"remaining\": 20,\r\n            \"pricingTierId\": 2\r\n        }\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://localhost:7042/api/Event",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7042",
+              "path": [
+                "api",
+                "Event"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Event",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id\": 3,\r\n    \"name\": \"Event3\",\r\n    \"description\": \"DESC\",\r\n    \"eventDate\": \"2026-06-15T12:05:09\",\r\n    \"duration\": 6,\r\n    \"eventStatus\": 0,\r\n    \"venueId\": 2,\r\n    \"isActive\": true,\r\n    \"ticketTypes\": [\r\n        {\r\n            \"id\": 5,\r\n            \"name\": \"VIP\",\r\n            \"totalAvailable\": 15,\r\n            \"remaining\": 15,\r\n            \"eventId\": 0,\r\n            \"event\": null,\r\n            \"pricingTier\": {\r\n                \"id\": 0,\r\n                \"name\": \"\",\r\n                \"description\": \"\",\r\n                \"price\": -1,\r\n                \"isActive\": true,\r\n                \"events\": []\r\n            },\r\n            \"pricingTierId\": 1,\r\n            \"tickets\": []\r\n        }\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://localhost:7042/api/Event",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7042",
+              "path": [
+                "api",
+                "Event"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Event by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://localhost:7042/api/Event/1?incVenue=Y&incTicketTypes=Y",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7042",
+              "path": [
+                "api",
+                "Event",
+                "1"
+              ],
+              "query": [
+                {
+                  "key": "incVenue",
+                  "value": "Y"
+                },
+                {
+                  "key": "incTicketTypes",
+                  "value": "Y"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetTicketsAvailability",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://localhost:7042/api/Event/tickets?pageNumber=2&pageSize=15",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7042",
+              "path": [
+                "api",
+                "Event",
+                "tickets"
+              ],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "2"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "15"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get all events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://localhost:7042/api/event",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7042",
+              "path": [
+                "api",
+                "event"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Purchase Ticket",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"ticketTypeId\": 5,\r\n    \"buyerName\": \"Tom Sawyer\",\r\n    \"quantity\": 1,\r\n    \"totalCost\": 45.6\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://localhost:7042/api/Event/ticket",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7042",
+              "path": [
+                "api",
+                "Event",
+                "ticket"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Event",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id\": 3,\r\n    \"name\": \"Event3\",\r\n    \"description\": \"DESC\",\r\n    \"eventDate\": \"2026-06-15T12:05:09\",\r\n    \"duration\": 6,\r\n    \"eventStatus\": 0,\r\n    \"venueId\": 2,\r\n    \"isActive\": true,\r\n    \"ticketTypes\": [\r\n        {\r\n            \"id\": 5,\r\n            \"name\": \"VIP\",\r\n            \"totalAvailable\": 15,\r\n            \"remaining\": 15,\r\n            \"eventId\": 0,\r\n            \"event\": null,\r\n            \"pricingTier\": {\r\n                \"id\": 0,\r\n                \"name\": \"\",\r\n                \"description\": \"\",\r\n                \"price\": -1,\r\n                \"isActive\": true,\r\n                \"events\": []\r\n            },\r\n            \"pricingTierId\": 1,\r\n            \"tickets\": []\r\n        }\r\n    ]\r\n}"
+            },
+            "url": {
+              "raw": "https://localhost:7042/api/Event/3",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7042",
+              "path": [
+                "api",
+                "Event",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Pricings",
+      "item": [
+        {
+          "name": "Add Pricing Tier",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Pricing tier 2\",\r\n    \"price\": 20,\r\n    \"description\": \"\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://localhost:7042/api/pricing",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7042",
+              "path": [
+                "api",
+                "pricing"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get PricingTiers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://localhost:7042/api/Pricing",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7042",
+              "path": [
+                "api",
+                "Pricing"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get pricing tier",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://localhost:7042/api/pricing/2",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7042",
+              "path": [
+                "api",
+                "pricing",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Pricing Tier",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id\": 1,\r\n    \"name\": \"Pricing tier 1\",\r\n    \"description\": \"update 1\",\r\n    \"price\": 45.69,\r\n    \"isActive\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://localhost:7042/api/pricing",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7042",
+              "path": [
+                "api",
+                "pricing"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Pricing tier",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "https://localhost:7042/api/pricing/3",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7042",
+              "path": [
+                "api",
+                "pricing",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "StartProcessing",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://localhost:7042/api/Reports?reportName=TicketSalesByEventReport",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7042",
+              "path": [
+                "api",
+                "Reports"
+              ],
+              "query": [
+                {
+                  "key": "reportName",
+                  "value": "TicketSalesByEventReport"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Job Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://localhost:7042/api/Reports/status/36bc2cdd-805a-4499-b4de-a63d3743439b",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7042",
+              "path": [
+                "api",
+                "Reports",
+                "status",
+                "36bc2cdd-805a-4499-b4de-a63d3743439b"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Job Results",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://localhost:7042/api/Reports/results/36bc2cdd-805a-4499-b4de-a63d3743439b",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7042",
+              "path": [
+                "api",
+                "Reports",
+                "results",
+                "36bc2cdd-805a-4499-b4de-a63d3743439b"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"test\",\r\n  \"password\": \"test\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://localhost:7042/api/Auth/login",
+          "protocol": "https",
+          "host": [
+            "localhost"
+          ],
+          "port": "7042",
+          "path": [
+            "api",
+            "Auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
