@@ -13,6 +13,8 @@ namespace EventManagementAPI.Data
         public DbSet<ReportRequest> BackgroundJobs => Set<ReportRequest>();
         public DbSet<TicketSalesByEventReport> TicketSalesByEventReports => Set<TicketSalesByEventReport>();
 
+        // Parameterless constructor required by the mocking framework
+        public AppDbContext() { }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

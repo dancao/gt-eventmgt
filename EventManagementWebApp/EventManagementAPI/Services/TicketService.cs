@@ -1,19 +1,20 @@
 ﻿using EventManagementAPI.Data;
 using EventManagementAPI.Domain.Entities;
+using EventManagementAPI.Repositories.Interfaces;
 using EventManagementAPI.Services.Interfaces;
 using EventManagementAPI.ViewModels;
-using Microsoft.EntityFrameworkCore;
-using System.Data;
 
 namespace EventManagementAPI.Services
 {
     public class TicketService : ITicketService
     {
         private readonly AppDbContext _dbContext;
+        private readonly ITicketRepository _ticketRepository;
 
-        public TicketService(AppDbContext dbContext)
+        public TicketService(AppDbContext dbContext, ITicketRepository ticketRepository)
         {
             _dbContext = dbContext;
+            _ticketRepository = ticketRepository;
         }
 
         public async Task<bool> PurchaseTicketAsync(PurchaseTicketDto purchaseTicketDto)
@@ -24,9 +25,7 @@ namespace EventManagementAPI.Services
 
             try
             {
-                var updatedRows = await _dbContext.TicketTypes
-                    .Where(tt => tt.Id == purchaseTicketDto.TicketTypeId && tt.Remaining >= purchaseTicketDto.Quantity)
-                    .ExecuteUpdateAsync(setters => setters.SetProperty(tt => tt.Remaining, tt => tt.Remaining - purchaseTicketDto.Quantity));
+                var updatedRows = await _ticketRepository.UpdateTicketTypeAsync(purchaseTicketDto.TicketTypeId, purchaseTicketDto.Quantity);
 
                 if (updatedRows == 0)
                 {
@@ -43,7 +42,7 @@ namespace EventManagementAPI.Services
                     Quanlity = purchaseTicketDto.Quantity,
                     TotalCost = purchaseTicketDto.TotalCost
                 };
-                _dbContext.Tickets.Add(ticket);
+                await _ticketRepository.AddTicketAsync(ticket);
 
                 await _dbContext.SaveChangesAsync();
                 await transaction.CommitAsync();
