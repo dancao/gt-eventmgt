@@ -2,6 +2,7 @@
 - Technologies: Net Core API, .Net 10, EF Core, MS Test, Hangfire, MemoryCache, JWT Authentication, SQL Lite
 - Design Patterns: DI, Circuit Breaker pattern, Asynchronous Request-Reply pattern, Singleton
 - Global Exception handling
+- you can get my postman colltion for integration test at "Others" section
 ## Event Management API
 - Access "/swagger/index.html" to view all endpoints
 ### Auth
@@ -132,5 +133,6 @@ Response
 ### Others
 - You can use Venue API, Pricing API to manage Venue and PricingTier.
 - You need to use Authentication (Login) to use Venue API and Pricing API
+- [Postman collection](https://github.com/dancao/gt-eventmgt/blob/64eb3d7a7527ebaf0382aad7ec2880d43d38dc70/EventMgt%20Testing.postman_collection.json)
 
 **Happy Programing** :+1:
