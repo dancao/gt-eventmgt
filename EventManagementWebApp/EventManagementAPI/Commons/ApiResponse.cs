@@ -12,7 +12,7 @@ namespace EventManagementAPI.Commons
         [JsonProperty("data")]
         public T? Data { get; set; }
 
-        [JsonProperty("errorMessage")]
-        public string ErrorMessage { get; set; } = "";
+        [JsonProperty("message")]
+        public string Message { get; set; } = "";
     }
 }

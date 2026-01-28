@@ -119,7 +119,7 @@ namespace EventManagementAPI.Helpers
             {
                 Status = status,
                 Data = data,
-                ErrorMessage = errorMessage
+                Message = errorMessage
             };
         }
     }
