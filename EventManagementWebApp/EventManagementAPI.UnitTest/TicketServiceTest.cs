@@ -4,8 +4,6 @@ using EventManagementAPI.Repositories.Interfaces;
 using EventManagementAPI.Services;
 using EventManagementAPI.ViewModels;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage;
 using Moq;
 
 namespace EventManagementAPI.UnitTest
