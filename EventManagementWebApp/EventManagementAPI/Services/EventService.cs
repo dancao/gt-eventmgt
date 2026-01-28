@@ -227,9 +227,10 @@ namespace EventManagementAPI.Services
             };
         }
 
-        public async Task<(List<TicketAvailabilityDto> ticketAvailabilities, int totalCount)> GetTicketAvailabilityAsync(int pageNumber = 1, int pageSize = 10)
+        public async Task<(List<TicketAvailabilityDto> ticketAvailabilities, int totalCount)> GetTicketAvailabilityAsync(int pageNumber = 1, 
+            int pageSize = 10)
         {
-            var pagedEvents = await _eventRepository.GetTicketAvailabilityAsync();
+            var pagedEvents = await _eventRepository.GetTicketAvailabilityAsync(pageNumber, pageSize);
             var results = pagedEvents.events.Select(CreateTicketAvailabilityDto).ToList();
             return (results, pagedEvents.totalCount);
         }

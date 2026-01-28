@@ -10,6 +10,8 @@ namespace EventManagementAPI.Data
         public DbSet<Event> Events => Set<Event>();
         public DbSet<TicketType> TicketTypes => Set<TicketType>();
         public DbSet<Ticket> Tickets => Set<Ticket>();
+        public DbSet<ReportRequest> BackgroundJobs => Set<ReportRequest>();
+        public DbSet<TicketSalesByEventReport> TicketSalesByEventReports => Set<TicketSalesByEventReport>();
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -38,6 +40,12 @@ namespace EventManagementAPI.Data
             .WithOne(t => t.TicketType)
             .HasForeignKey(t => t.TicketTypeId)
             .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ReportRequest>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id);
+            });
         }
     }
 }

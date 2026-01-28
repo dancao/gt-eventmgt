@@ -27,7 +27,7 @@ namespace EventManagementAPI.Repositories
                 await dbContext.Database.EnsureCreatedAsync();
                 _logger.LogInformation("Database created successfully.");
                 // for Production migration
-                //await dbContext.Database.MigrateAsync(cancellationToken); 
+                //await dbContext.Database.MigrateAsync(cancellationToken);
                 //_logger.LogInformation("Database migrated successfully.");
 
                 // Optional seed
@@ -43,6 +43,11 @@ namespace EventManagementAPI.Repositories
                     {
                         Name = "Tier 2",
                         Price = (decimal)8.3
+                    });
+                    dbContext.PricingTiers.Add(new PricingTier()
+                    {
+                        Name = "Tier 3",
+                        Price = (decimal)3.9
                     });
                     await dbContext.SaveChangesAsync(cancellationToken);
                 }
@@ -60,6 +65,12 @@ namespace EventManagementAPI.Repositories
                         Name = "Chicago Stadium",
                         Address = "123 Main St.",
                         Capacity = 300
+                    });
+                    dbContext.Venues.Add(new Venue()
+                    {
+                        Name = "Wheaton Park",
+                        Address = "1246 Lambert St.",
+                        Capacity = 500
                     });
                     await dbContext.SaveChangesAsync(cancellationToken);
                 }

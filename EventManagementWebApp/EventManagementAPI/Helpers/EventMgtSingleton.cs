@@ -95,7 +95,8 @@ namespace EventManagementAPI.Helpers
                     Id = ticket.Id,
                     BuyerName = ticket.BuyerName,
                     Quanlity = ticket.Quanlity,
-                    PurchasedDate = ticket.PurchasedDate
+                    PurchasedDate = ticket.PurchasedDate,
+                    TotalCost = ticket.TotalCost
                 }).ToList()
             }).ToList();
             return evtDto;

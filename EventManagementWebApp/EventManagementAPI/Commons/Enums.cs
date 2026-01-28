@@ -18,4 +18,11 @@
         Reserved,
         Sold
     }
+
+    public enum JobStatus
+    {
+        Pending,
+        Running,
+        Completed
+    }
 }

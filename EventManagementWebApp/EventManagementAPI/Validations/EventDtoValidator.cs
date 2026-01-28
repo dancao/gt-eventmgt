@@ -1,5 +1,4 @@
-﻿using EventManagementAPI.Domain.Entities;
-using EventManagementAPI.ViewModels;
+﻿using EventManagementAPI.ViewModels;
 using FluentValidation;
 
 namespace EventManagementAPI.Validations

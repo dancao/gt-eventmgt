@@ -40,7 +40,8 @@ namespace EventManagementAPI.Services
                     TicketTypeId = purchaseTicketDto.TicketTypeId,
                     BuyerName = purchaseTicketDto.BuyerName,
                     PurchasedDate = DateTime.UtcNow,
-                    Quanlity = purchaseTicketDto.Quantity
+                    Quanlity = purchaseTicketDto.Quantity,
+                    TotalCost = purchaseTicketDto.TotalCost
                 };
                 _dbContext.Tickets.Add(ticket);
 

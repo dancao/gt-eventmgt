@@ -1,4 +1,6 @@
-﻿namespace EventManagementAPI.ViewModels
+﻿using Newtonsoft.Json;
+
+namespace EventManagementAPI.ViewModels
 {
     public class TicketDto
     {
@@ -6,5 +8,6 @@
         public string BuyerName { get; set; } = "";
         public int Quanlity { get; set; }
         public DateTime PurchasedDate { get; set; }
+        public decimal TotalCost { get; set; } = 0;
     }
 }

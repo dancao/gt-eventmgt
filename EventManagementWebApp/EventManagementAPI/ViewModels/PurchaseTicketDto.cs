@@ -12,5 +12,8 @@ namespace EventManagementAPI.ViewModels
 
         [JsonProperty("quantity")]
         public int Quantity { get; set; } = 0;
+
+        [JsonProperty("totalCost")]
+        public decimal TotalCost { get; set; } = 0;
     }
 }

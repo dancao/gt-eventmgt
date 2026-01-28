@@ -1,5 +1,4 @@
 ﻿using EventManagementAPI.Commons;
-using EventManagementAPI.Domain.Entities;
 using EventManagementAPI.Helpers;
 using EventManagementAPI.Services.Interfaces;
 using EventManagementAPI.ViewModels;

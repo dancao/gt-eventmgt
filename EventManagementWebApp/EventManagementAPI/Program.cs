@@ -7,6 +7,8 @@ using EventManagementAPI.Services.Interfaces;
 using EventManagementAPI.Validations;
 using EventManagementAPI.ViewModels;
 using FluentValidation;
+using Hangfire;
+using Hangfire.Storage.SQLite;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +30,19 @@ builder.Services.AddResiliencePipeline(Constants.DbCircuitBreakerKey, builder =>
         ShouldHandle = new PredicateBuilder().Handle<DbUpdateException>().Handle<SqliteException>()
     });
 });
+
+//Asynchronous Request-Reply Pattern
+builder.Services.AddHangfire(config => config
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UseSQLiteStorage("hangfire.db", new SQLiteStorageOptions
+    {
+        // Settings optimized for SQLite stability
+        QueuePollInterval = TimeSpan.FromSeconds(15),
+        InvisibilityTimeout = TimeSpan.FromMinutes(5)
+    }));
+builder.Services.AddHangfireServer();
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -64,6 +79,7 @@ builder.Services.AddScoped<IValidator<PurchaseTicketDto>, PurchaseTicketDtoValid
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IPricingService, PricingService>();
 builder.Services.AddScoped<ITicketService, TicketService>();
+builder.Services.AddScoped<IReportingService, ReportingService>();
 
 // SQLite - EF Core
 var connectionString = builder.Configuration.GetSection("DatabaseConfiguration").GetValue(typeof(string), "ConnectionString")

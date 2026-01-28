@@ -12,6 +12,7 @@ namespace EventManagementAPI.Validations
                 .NotEmpty()
                 .Must(x => !string.IsNullOrWhiteSpace(x) && x.Length <= 100).WithMessage("BuyerName must be less than 100 chars.");
             RuleFor(x => x.Quantity).GreaterThan(0);
+            RuleFor(x => x.TotalCost).GreaterThan(0);
         }
     }
 }
