@@ -130,6 +130,11 @@ Response
     "message": ""
 }
 ```
+### Future Enhancements
+- Add Refund, Cancel tickets
+- Add Front End app (Angular or React)
+- Add Docker
+- Deploy to Azure/AWS
 ### Others
 - You can use Venue API, Pricing API to manage Venue and PricingTier.
 - You need to use Authentication (Login) to use Venue API and Pricing API
