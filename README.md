@@ -1,8 +1,8 @@
 # REST API for a simplified ticketing system
 - Technologies: Net Core API, .Net 10, EF Core, MS Test, Hangfire, MemoryCache, JWT Authentication, SQL Lite, Visual Studio Community 2026, ver 18.2.1
-- Design Patterns: DI, Circuit Breaker pattern, Asynchronous Request-Reply pattern, Singleton
+- Design Patterns: DI, Circuit Breaker pattern, Asynchronous Request-Reply pattern, Singleton, Repository + Unit of Work
 - Global Exception handling
-- you can get my postman colltion for integration test at "Others" section
+- Postman collection for integration test at "Others" section
 ## Event Management API
 - Access "/swagger/index.html" to view all endpoints
 ### Auth
